@@ -1,7 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
+import java.util.Locale.Category;
 import structures.AssociativeArray;
 
 /**
@@ -30,7 +33,7 @@ public class AACMappings {
   /**
    * Stores the mappings betweeen categories' items and categories
    */
-  AssociativeArray<String, AACCategory>  categoryMappings;
+  AssociativeArray<String, AACCategory> categoryMappings;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -38,6 +41,7 @@ public class AACMappings {
 
   /**
    * Create a new empty category with the given name
+   * 
    * @throws FileNotFoundException
    */
   public AACMappings(String filename) throws Exception {
@@ -46,7 +50,7 @@ public class AACMappings {
     String input = "";
     this.currentCategory = categories;
 
-    while(readInput.hasNextLine()) {
+    while (readInput.hasNextLine()) {
       input = readInput.nextLine();
       String[] inputs = input.split(" ");
 
@@ -57,10 +61,10 @@ public class AACMappings {
         this.categories.addItem(categoryImg, categoryName);
         // create a current category
         this.currentCategory = new AACCategory(categoryName);
-        // add the maping between this category image and name to the category 
+        // add the maping between this category image and name to the category
         // it belongs to
-        this.categoryMappings.set(categoryImg, this.categories);
-        this.categoryMappings.set(categoryName, this.categories);
+        this.categoryMappings.set(categoryImg, this.currentCategory);
+        this.categoryMappings.set(categoryName, this.currentCategory);
       } else {
         String itemImg = inputs[0];
         String itemName = input.substring(inputs[0].length() + 1);
@@ -81,13 +85,13 @@ public class AACMappings {
   // +------------------+
 
   /*
-   * Given the image location selected, it determines the associated text with 
-   * the image. If the image provided is a category, it also updates the AAC's 
-   * current category to be the category associated with that image.
+   * Given the image location selected, it determines the associated text with the image. If the
+   * image provided is a category, it also updates the AAC's current category to be the category
+   * associated with that image.
    */
   public String getText(String imageLoc) throws Exception {
     // if this is an image for a category
-    if (this.categories.hasImage(imageLoc)){
+    if (this.categories.hasImage(imageLoc)) {
       // get the category name
       String currentCategoryName = this.categories.getText(imageLoc);
       // update it to current category
@@ -98,14 +102,14 @@ public class AACMappings {
       return this.currentCategory.getText(imageLoc);
     } else {
       throw new Exception("The image is not in the current category.");
-    }// if
+    } // if
   } // getText()
 
   /*
    * Provides as array of all the images in the current category.
    */
   public String[] getImageLocs() {
-    return this.currentCategory.getImages(); 
+    return this.currentCategory.getImages();
   } // getImageLocs()
 
   /*
@@ -117,11 +121,11 @@ public class AACMappings {
   } // reset()
 
   /*
-   * Gets the current category.
-   * Returns the current category or the empty string if on the default category.
+   * Gets the current category. Returns the current category or the empty string if on the default
+   * category.
    */
   public String getCurrentCategory() {
-    return this.currentCategory.getCategory(); 
+    return this.currentCategory.getCategory();
   } // getCurrentCategory()
 
   /*
@@ -129,19 +133,40 @@ public class AACMappings {
    */
   public boolean isCategory(String imageLoc) {
     // return true if the home category has contains the input image
-    return this.categories.hasImage(imageLoc); 
+    return this.categories.hasImage(imageLoc);
   } // isCategory()
 
   /*
-   * 
+   * Writes the ACC mappings stored to a file.
    */
-  public void writeToFile(String filename) {
-    return; //STUB
-  } //writeToFile(String)
+  public void writeToFile(String filename) throws Exception {
+    // create a pen that writes to a file
+    FileWriter pen = new FileWriter(filename);
+
+    // get the image location for all category images
+    String[] categoryImgs = this.categories.getImages();
+
+    for (int i = 0; i < categoryImgs.length; i++) {
+      // write the category image location and category name
+      String categoryName = this.categories.getText(categoryImgs[i]);
+      pen.write(categoryImgs[i] + " " + categoryName + "\n");
+
+      // get the items in the current category
+      AACCategory readCategory = this.categoryMappings.get(categoryName);
+      String[] itemImgs = readCategory.getImages();
+
+      for (int j = 0; j < itemImgs.length; j++) {
+        // write all the items in the category
+        String itemName = readCategory.getText(itemImgs[i]);
+        pen.write(">" + itemImgs[i] + " " + itemName + "\n");
+      } // for
+    } // for
+
+    pen.close();
+  } // writeToFile(String)
 
   /*
-   * Adds the mapping to current category (or the default category if that is 
-   * the current category).
+   * Adds the mapping to current category (or the default category if that is the current category).
    */
   public void add(String imageLoc, String text) {
     currentCategory.addItem(imageLoc, text);
