@@ -3,7 +3,7 @@ import structures.KVPair;
 
 /**
  * A basic implementation of AACCategory which represents the mappings for a 
- * single page of items that should be displayed
+ * single page/category of items that should be displayed
  *
  * @author Lydia Ye
  */
@@ -19,8 +19,7 @@ public class AACCategory {
   String name;
 
   /**
-   * A complete set of AAC mappings that map the images on the home page to 
-   * the AACCategories
+   * Store the mappings between image locations to words
    */
   AssociativeArray<String, String> mappings;
 
