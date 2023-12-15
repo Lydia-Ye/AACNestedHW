@@ -7,7 +7,7 @@ import static java.lang.reflect.Array.newInstance;
  * and values of type V. Associative Arrays store key/value pairs
  * and permit you to look up values by key.
  *
- * @author Your Name Here
+ * @author Lydia Ye
  * @author Samuel A. Rebelsky
  */
 public class AssociativeArray<K, V> {
@@ -32,7 +32,7 @@ public class AssociativeArray<K, V> {
   /**
    * The array of key/value pairs.
    */
-  KVPair<K, V> pairs[];
+  public KVPair<K, V> pairs[];
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -69,9 +69,9 @@ public class AssociativeArray<K, V> {
   public String toString() {
     String AAStr = "";
     // this for loop turns every KV pairs in the associative array to an string
-    for (int i = 0; i < pairs.length - 1; i++) {
+    for (int i = 0; i < this.pairs.length - 1; i++) {
       if (pairs[i] != null) {
-        AAStr = AAStr + pairs[i].key.toString() + " : " + pairs[i].value.toString() + ", "; 
+        AAStr = AAStr + this.pairs[i].key.toString() + " : " + this.pairs[i].value.toString() + ", "; 
       } // if
     } // for 
     AAStr = AAStr.substring(0, AAStr.length() - 2);
